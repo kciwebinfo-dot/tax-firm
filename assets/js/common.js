@@ -36,6 +36,16 @@ $(function () {
         TaxAjax.post(window.TaxPortalConfig.preferencesUrl, { mode: nextMode }).done(() => TaxPortal.toast('success', 'Mode updated'));
     });
 
+    $('.upload-box input[type="file"]').each(function () {
+        const input = $(this);
+        input.data('defaultText', input.closest('.upload-box').find('span').text());
+    }).on('change', function () {
+        const file = this.files && this.files[0];
+        const box = $(this).closest('.upload-box');
+        box.toggleClass('has-file', Boolean(file));
+        box.find('span').text(file ? file.name : $(this).data('defaultText'));
+    });
+
     if ($('#collectionChart').length) {
         new ApexCharts(document.querySelector('#collectionChart'), {
             chart: { type: 'area', height: 320, toolbar: { show: false } },
