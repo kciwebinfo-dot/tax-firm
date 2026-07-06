@@ -1,5 +1,7 @@
 @media (max-width: 1199px) {
     .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .profile-layout { grid-template-columns: 1fr; }
+    .profile-summary { position: static; }
 }
 
 @media (max-width: 991px) {
@@ -21,4 +23,6 @@
     .theme-select,
     .profile-chip strong { display: none; }
     .panel { padding: 16px; }
+    .upload-grid,
+    .upload-preview { grid-template-columns: 1fr; }
 }
