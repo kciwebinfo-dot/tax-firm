@@ -1,7 +1,4 @@
-/logs/*
-!/logs/.gitkeep
-/uploads/*
-!/uploads/.gitkeep
-
 .env
 *.log
+.DS_Store
+Thumbs.db
