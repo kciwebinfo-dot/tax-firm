@@ -1,5 +1,3 @@
-USE tax_firm_portal;
-
 INSERT IGNORE INTO permissions (name, slug, module) VALUES
 ('View Profile', 'profile.view', 'profile'),
 ('Update Profile', 'profile.update', 'profile'),
