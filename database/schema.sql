@@ -157,7 +157,10 @@ INSERT INTO permissions (name, slug, module) VALUES
 ('View Dashboard', 'dashboard.view', 'dashboard'),
 ('Manage Users', 'users.manage', 'users'),
 ('Manage Settings', 'settings.manage', 'settings'),
-('View Reports', 'reports.view', 'reports');
+('View Reports', 'reports.view', 'reports'),
+('View Profile', 'profile.view', 'profile'),
+('Update Profile', 'profile.update', 'profile'),
+('Change Own Password', 'profile.password', 'profile');
 
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id FROM roles r CROSS JOIN permissions p WHERE r.slug = 'admin';
