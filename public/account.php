@@ -63,11 +63,25 @@ $flash = flash_get();
     <link href="<?= e(asset_url('css/app.css')) ?>" rel="stylesheet">
 </head>
 <body class="app-screen <?= e(active_theme_class()) ?>">
-<main class="account-shell">
-    <section class="panel account-panel">
+<?php render_app_sidebar($firm); ?>
+<main class="app-main">
+    <?php render_app_topbar($firm, current_user() ?: [], 'My Profile'); ?>
+    <section class="profile-layout">
+        <aside class="panel profile-summary">
+            <div class="profile-avatar large"><?= e(user_initials($user['name'] ?? 'User')) ?></div>
+            <h2><?= e($user['name'] ?? 'User') ?></h2>
+            <p><?= e($user['role'] ?? 'Staff') ?></p>
+            <div class="summary-list">
+                <span><i class="fa-solid fa-user"></i><?= e($user['username'] ?? 'Not set') ?></span>
+                <span><i class="fa-solid fa-envelope"></i><?= e($user['email'] ?? 'Not set') ?></span>
+                <span><i class="fa-solid fa-phone"></i><?= e($user['mobile'] ?? 'Not set') ?></span>
+                <span><i class="fa-solid fa-circle-half-stroke"></i><?= e(ucfirst($user['theme_mode'] ?? 'light')) ?> mode</span>
+            </div>
+        </aside>
+        <section class="panel account-panel">
         <div class="panel-header">
-            <h1>My Account</h1>
-            <a class="btn btn-outline-secondary btn-sm" href="<?= e(app_url('dashboard.php')) ?>">Back</a>
+            <h1>Account Details</h1>
+            <span class="badge text-bg-light">User Profile</span>
         </div>
         <?php if ($flash): ?>
             <div class="alert alert-<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
@@ -95,8 +109,8 @@ $flash = flash_get();
             </div>
             <div class="col-md-3 form-floating">
                 <select class="form-select" id="theme_color" name="theme_color">
-                    <?php foreach (['royal', 'purple', 'green', 'orange', 'slate'] as $theme): ?>
-                        <option value="<?= e($theme) ?>" <?= ($user['theme_color'] ?? 'royal') === $theme ? 'selected' : '' ?>><?= e(ucfirst($theme)) ?></option>
+                    <?php foreach (available_theme_colors() as $theme => $label): ?>
+                        <option value="<?= e($theme) ?>" <?= ($user['theme_color'] ?? 'royal') === $theme ? 'selected' : '' ?>><?= e($label) ?></option>
                     <?php endforeach; ?>
                 </select>
                 <label for="theme_color">Theme</label>
@@ -114,7 +128,18 @@ $flash = flash_get();
                 <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk me-2"></i>Save Account</button>
             </div>
         </form>
+        </section>
     </section>
 </main>
+<script>
+window.TaxPortalConfig = {
+    csrfToken: '<?= e(csrf_token()) ?>',
+    preferencesUrl: '<?= e(app_url('preferences.php')) ?>',
+    logoutUrl: '<?= e(app_url('logout.php')) ?>',
+    sessionMinutes: <?= (int) SESSION_TIMEOUT_MINUTES ?>
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<?= e(asset_url('js/app.js')) ?>"></script>
 </body>
 </html>
