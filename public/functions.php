@@ -159,6 +159,101 @@ function active_theme_class(): string
     return 'theme-' . ($color ?: 'royal') . ' mode-' . ($mode ?: 'light');
 }
 
+function available_theme_colors(): array
+{
+    return [
+        'royal' => 'Royal',
+        'purple' => 'Purple',
+        'green' => 'Green',
+        'orange' => 'Orange',
+        'teal' => 'Teal',
+        'slate' => 'Slate',
+    ];
+}
+
+function selected_attr(?string $value, string $expected): string
+{
+    return $value === $expected ? 'selected' : '';
+}
+
+function active_nav(string $page): string
+{
+    $current = basename((string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+    return $current === $page ? 'active' : '';
+}
+
+function render_app_sidebar(array $firm): void
+{
+    ?>
+    <aside class="app-sidebar" id="appSidebar">
+        <div class="firm-brand compact">
+            <img src="<?= e(firm_logo_url($firm)) ?>" alt="Firm logo">
+            <div>
+                <strong><?= e(($firm['short_name'] ?? '') ?: ($firm['firm_name'] ?? 'Tax Firm')) ?></strong>
+                <span><?= e(($firm['tagline'] ?? '') ?: ($firm['firm_code'] ?? 'Tax Portal')) ?></span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="<?= e(active_nav('dashboard.php')) ?>" href="<?= e(app_url('dashboard.php')) ?>"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+            <a href="#"><i class="fa-solid fa-users"></i><span>Clients</span></a>
+            <a href="#"><i class="fa-solid fa-file-invoice"></i><span>GST</span></a>
+            <a href="#"><i class="fa-solid fa-receipt"></i><span>ITR</span></a>
+            <a href="#"><i class="fa-solid fa-wallet"></i><span>Fees</span></a>
+            <a href="#"><i class="fa-solid fa-user-shield"></i><span>Roles</span></a>
+            <a class="<?= e(active_nav('account.php')) ?>" href="<?= e(app_url('account.php')) ?>"><i class="fa-solid fa-user-gear"></i><span>Profile</span></a>
+            <a href="#"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+        </nav>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <?php
+}
+
+function render_app_topbar(array $firm, array $user, string $title = 'Dashboard'): void
+{
+    ?>
+    <header class="app-topbar">
+        <button class="icon-btn d-lg-none" id="sidebarToggle" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-title">
+            <span><?= e($firm['firm_name'] ?? APP_NAME) ?></span>
+            <h1><?= e($title) ?></h1>
+        </div>
+        <div class="global-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" placeholder="Search clients, returns, invoices">
+        </div>
+        <div class="topbar-actions">
+            <button class="icon-btn" id="modeToggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">
+                <i class="fa-solid <?= ($user['theme_mode'] ?? 'light') === 'dark' ? 'fa-sun' : 'fa-moon' ?>"></i>
+            </button>
+            <select class="form-select form-select-sm theme-select" id="themeSelect" title="Theme">
+                <?php foreach (available_theme_colors() as $theme => $label): ?>
+                    <option value="<?= e($theme) ?>" <?= selected_attr($user['theme_color'] ?? 'royal', $theme) ?>><?= e($label) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <div class="dropdown">
+                <button class="icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications"><i class="fa-solid fa-bell"></i></button>
+                <div class="dropdown-menu dropdown-menu-end notification-menu">
+                    <span class="dropdown-item-text text-muted">No notifications</span>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="profile-chip" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span><?= e(user_initials($user['name'] ?? 'User')) ?></span>
+                    <strong><?= e($user['name'] ?? 'User') ?></strong>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="<?= e(app_url('account.php')) ?>">My Account</a></li>
+                    <li><a class="dropdown-item" href="#">Activity</a></li>
+                    <li><a class="dropdown-item" href="#">Wallet</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="<?= e(app_url('logout.php')) ?>">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <?php
+}
+
 function find_user_by_login(string $login): ?array
 {
     $stmt = db()->prepare('SELECT * FROM users WHERE (username = ? OR email = ? OR mobile = ?) AND status = 1 LIMIT 1');
