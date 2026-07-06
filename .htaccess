@@ -1,0 +1,18 @@
+Options -Indexes
+RewriteEngine On
+
+RewriteCond %{THE_REQUEST} \s/+index\.php[\s?] [NC]
+RewriteRule ^index\.php$ / [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^dashboard/?$ modules/dashboard/index.php [L,QSA]
+RewriteRule ^login/?$ modules/auth/login.php [L,QSA]
+RewriteRule ^profile/?$ modules/profile/index.php [L,QSA]
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
