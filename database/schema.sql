@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS tax_firm_portal CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE tax_firm_portal;
-
 CREATE TABLE firm_settings (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
