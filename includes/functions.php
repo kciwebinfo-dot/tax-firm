@@ -77,6 +77,44 @@ function user_initials(string $name): string
     return $initials ?: 'U';
 }
 
+function upload_url(?string $path): string
+{
+    if (!$path) {
+        return '';
+    }
+
+    if (preg_match('#^https?://#', $path)) {
+        return $path;
+    }
+
+    return app_base_url() . '/' . ltrim($path, '/');
+}
+
+function selected_attr(string $actual, string $expected): string
+{
+    return $actual === $expected ? 'selected' : '';
+}
+
+function profile_completion(array $user, array $profile): int
+{
+    $fields = [
+        $user['name'] ?? '',
+        $user['email'] ?? '',
+        $user['mobile'] ?? '',
+        $user['photo'] ?? '',
+        $user['signature'] ?? '',
+        $profile['address'] ?? '',
+        $profile['bank_name'] ?? '',
+        $profile['bank_account'] ?? '',
+        $profile['ifsc'] ?? '',
+        $profile['emergency_name'] ?? '',
+        $profile['emergency_mobile'] ?? '',
+    ];
+
+    $filled = array_filter($fields, static fn ($value) => trim((string) $value) !== '');
+    return (int) round((count($filled) / count($fields)) * 100);
+}
+
 function log_activity(int $userId, string $action, string $details = ''): void
 {
     $stmt = db()->prepare('INSERT INTO activity_logs (user_id, action, details, ip_address, user_agent, created_at) VALUES (?, ?, ?, ?, ?, NOW())');
